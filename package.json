@@ -10,7 +10,9 @@
 		"electron": "npm run build && electron ."
   },
   "dependencies": {
-    "vue": "^2.5.17"
+    "pokeapi-js-wrapper": "^1.1.1",
+    "vue": "^2.5.17",
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.0.1",
