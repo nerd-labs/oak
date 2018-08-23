@@ -1,3 +1,3 @@
 <p align="center">
-<img src="./src/assets/img/oak.gif" alt="Professor Oak"/>
+<img src="./src/assets/oak.gif" alt="Professor Oak"/>
 </p>
