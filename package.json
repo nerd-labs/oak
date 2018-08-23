@@ -2,10 +2,12 @@
   "name": "oak",
   "version": "0.1.0",
   "private": true,
+	"main": "main.js",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+		"electron": "npm run build && electron ."
   },
   "dependencies": {
     "vue": "^2.5.17"
@@ -14,6 +16,7 @@
     "@vue/cli-plugin-babel": "^3.0.1",
     "@vue/cli-plugin-eslint": "^3.0.1",
     "@vue/cli-service": "^3.0.1",
+    "electron": "^2.0.8",
     "vue-template-compiler": "^2.5.17"
   },
   "eslintConfig": {
