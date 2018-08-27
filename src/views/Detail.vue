@@ -9,6 +9,16 @@
 			<ul class="pokemon__stats">
 				<li v-for="stat in pokemon.stats"><strong>{{stat.stat.name}}</strong> {{stat.base_stat}}</li>
 			</ul>
+
+			<a @click="addToPokedex()" class="pokemon__add" v-if="!isInPokedex">
+				<i class="material-icons">add</i>
+				Add to pokedex
+			</a>
+
+			<a @click="removeFromPokedex()" class="pokemon__add" v-if="isInPokedex">
+				<i class="material-icons">clear</i>
+				Remove from pokedex
+			</a>
 		</div>
 
 		<div v-if="loading" class="loading">
@@ -18,6 +28,7 @@
 
 <script>
 const Pokedex = require('pokeapi-js-wrapper');
+const STORAGE_KEY = 'pokedex';
 
 export default {
 	name: 'Detail',
@@ -25,11 +36,13 @@ export default {
 	data: () => ({
 			pokemon: undefined,
 			loading: true,
+			isInPokedex: false,
 	}),
 
 	mounted () {
-	   this.fetchData();
-  },
+		this.fetchData();
+		this.isInPokedex = this.checkPokedex();
+	},
 
 	methods: {
 		fetchData: function () {
@@ -45,7 +58,6 @@ export default {
 			P
 			.resource(`api/v2/pokemon/${this.$route.params.id}`)
 			.then((response) => {
-				console.log('response', response);
 				this.pokemon = response;
 				setTimeout(() => {
 					this.loading = false;
@@ -57,6 +69,59 @@ export default {
 			this.$router.push({
 				name: 'home'
 			});
+		},
+
+		addToPokedex() {
+
+			let pokedex = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+			if (!pokedex) pokedex = [];
+
+			pokedex.push(this.$route.params.id);
+
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
+
+			new Notification(`New pokemon added to pokedex`, {
+				body: this.pokemon.name,
+				icon: this.pokemon.sprites.front_default,
+				requireInteraction: false
+			});
+			this.isInPokedex = true;
+		},
+
+		removeFromPokedex() {
+			let pokedex = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+			if (!pokedex) pokedex = [];
+
+			let i = pokedex.indexOf(this.$route.params.id);
+
+			if(i != -1) {
+				pokedex.splice(i, 1);
+			}
+
+			localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
+
+			new Notification(`Pokemon removed from pokedex`, {
+				body: this.pokemon.name,
+				icon: this.pokemon.sprites.front_default,
+				requireInteraction: false
+			});
+			this.isInPokedex = false;
+		},
+
+		checkPokedex() {
+			const pokedex = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+			if (pokedex) {
+				const pkmn = pokedex.find((p) => {
+					return p === this.$route.params.id
+				});
+
+				if (pkmn) return true;
+			}
+
+			return false;
 		}
 	}
 
@@ -75,6 +140,7 @@ export default {
 .pokemon__stats {
 	padding: 0;
 	list-style: none;
+	line-height: 2;
 }
 
 .pokemon__sprite {
@@ -87,6 +153,29 @@ export default {
 		left: 20px;
 		position: absolute;
 		top: 20px;
+		z-index: 20;
+}
+
+.pokemon__add {
+	align-items: center;
+	border: 1px solid black;
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	padding: 5px 10px;
+}
+
+.pokemon__add:hover {
+	background-color: black;
+	color: white;
+}
+
+.pokemon__add i {
+	margin-right: 10px;
+}
+
+.app--electron .go-back {
+	top: 35px;
 }
 
 .loading {
@@ -102,9 +191,9 @@ export default {
 	border: 10px solid black;
   content: '';
   display: block;
-  height: 300px;
+  height: 200px;
 	margin: 20px auto;
-  width: 300px;
+  width: 200px;
 }
 
 @keyframes rotateBall {
