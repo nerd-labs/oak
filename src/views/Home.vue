@@ -18,13 +18,15 @@ export default {
 		pokedex: [],
 	}),
 
-	mounted() {
+	beforeMount() {
 		this.getPokedex();
 	},
 
 	methods: {
 		getPokedex() {
 			this.pokedex = JSON.parse(localStorage.getItem(STORAGE_KEY));
+
+			if (!this.pokedex) this.pokedex = [];
 		},
 
 		inPokedex(id) {

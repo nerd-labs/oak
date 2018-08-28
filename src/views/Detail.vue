@@ -7,7 +7,7 @@
 			<img class="pokemon__sprite" :src="pokemon.sprites.front_default" :alt="pokemon.name">
 
 			<ul class="pokemon__stats">
-				<li v-for="stat in pokemon.stats"><strong>{{stat.stat.name}}</strong> {{stat.base_stat}}</li>
+				<li v-for="stat in pokemon.stats" :key="stat.stat.name"><strong>{{stat.stat.name}}</strong> {{stat.base_stat}}</li>
 			</ul>
 
 			<a @click="addToPokedex()" class="pokemon__add" v-if="!isInPokedex">
@@ -72,7 +72,6 @@ export default {
 		},
 
 		addToPokedex() {
-
 			let pokedex = JSON.parse(localStorage.getItem(STORAGE_KEY));
 
 			if (!pokedex) pokedex = [];
@@ -81,11 +80,6 @@ export default {
 
 			localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
 
-			new Notification(`New pokemon added to pokedex`, {
-				body: this.pokemon.name,
-				icon: this.pokemon.sprites.front_default,
-				requireInteraction: false
-			});
 			this.isInPokedex = true;
 		},
 
@@ -102,11 +96,6 @@ export default {
 
 			localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
 
-			new Notification(`Pokemon removed from pokedex`, {
-				body: this.pokemon.name,
-				icon: this.pokemon.sprites.front_default,
-				requireInteraction: false
-			});
 			this.isInPokedex = false;
 		},
 
