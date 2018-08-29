@@ -83,11 +83,63 @@ export default {
 }
 
 .pokemon::after {
-	background-image:
-		radial-gradient(circle at center, white 0%, white 6%, lightgrey 6%, lightgrey 8%, black 8%, black 13%, transparent 13%, transparent),
-		linear-gradient(to bottom, red 0%, red 48%, black 48%, black 52%, white 52%, white 100%);
-	box-shadow: 0 0 3px rgba(0,0,0,.5);	border-radius: 50%;
-	border: 5px solid black;
+    background-image:
+        radial-gradient(
+            circle at center,
+            white 0%,
+            white 5%,
+            lightgrey 5%,
+            lightgrey 6%,
+            white 6%,
+            white 8%,
+            transparent 8%,
+            transparent
+        ),
+        radial-gradient(
+            circle at 50% 51%,
+            rgba(0,0,0,.3) 0%,
+            rgba(0,0,0,.3) 8%,
+            transparent 12%,
+            transparent
+        ),
+        radial-gradient(
+            circle at center,
+            lightgrey 0%,
+            lightgrey 12%,
+            #444 12%,
+            #444 16%,
+            rgba(68,68,68,.3) 16%,
+            rgba(68,68,68,.3) 17%,
+            transparent 14%,
+            transparent
+        ),
+        linear-gradient(
+            to bottom,
+            transparent 0%,
+            transparent 47%,
+            rgba(68,68,68,.3) 47%,
+            rgba(68,68,68,.3) 48%,
+            #444 48%,
+            #444 52%,
+            rgba(68,68,68,.3) 52%,
+            rgba(68,68,68,.3) 53%,
+            transparent 53%,
+            transparent 100%
+        ),
+        radial-gradient(
+            circle at center,
+            rgba(255,255,255,.3) 0%,
+            transparent 50%,
+            rgba(0,0,0,.3) 100%
+        ),
+        linear-gradient(
+            to bottom,
+            #eb3b2f 0%,
+            #eb3b2f 50%,
+            white 50%,
+            white 100%
+        );
+    border-radius: 50%;
 	content: '';
 	display: block;
 	height: 100%;
