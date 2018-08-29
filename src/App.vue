@@ -25,6 +25,7 @@ export default {
 			this.isElectron = true;
 
 			window.ipcRenderer.on('touchbar', this.goToDetailPage);
+			window.ipcRenderer.on('home', this.goToHome);
 
 			window.ipcRenderer.send('touchbar', {
 				number: 151
@@ -53,6 +54,12 @@ export default {
 				params: {
 					id: args
 				}
+			});
+		},
+
+		goToHome() {
+			this.$router.push({
+				name: 'home'
 			});
 		},
 

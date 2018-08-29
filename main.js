@@ -20,7 +20,7 @@ function createMenu () {
 				{role: 'paste'},
 				{role: 'pasteandmatchstyle'},
 				{role: 'delete'},
-				{role: 'selectall'}
+				{role: 'selectall'},
 			]
 		},
 		{
@@ -30,7 +30,22 @@ function createMenu () {
 				{role: 'toggledevtools'},
 				{type: 'separator'},
 				{role: 'togglefullscreen'},
-				{type: 'separator'}
+			]
+		},
+		{
+			label: 'Window',
+			submenu: [
+				{role: 'minimize'},
+				{type: 'separator'},
+				{role: 'close'},
+				{type: 'separator'},
+				{
+					label: 'Go to home',
+					accelerator: 'CommandOrControl+Shift+H',
+					click: (menuItem, browserWindow) => {
+						browserWindow.webContents.send('home')
+					}
+				},
 			]
 		}
 	];
