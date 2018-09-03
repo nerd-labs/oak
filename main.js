@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const isDev = require('electron-is-dev');
 
 let win;
 
@@ -10,7 +11,12 @@ function createWindow () {
 
     win.maximize();
 
-    win.loadFile('dist/index.html');
+    if (isDev) {
+        console.log('\n\nℹ️  Running in dev mode...\n\n');
+        win.loadURL('http://localhost:8080/');
+    } else {
+        win.loadFile('dist/index.html');
+    }
 
     win.once('ready-to-show', () => {
         win.show();
