@@ -5,8 +5,14 @@ let win;
 
 function createWindow () {
     win = new BrowserWindow({
+        frame: false,
         show: false,
         title: 'Oak',
+        titleBarStyle: 'hidden',
+        webPreferences: {
+            nodeIntegration: false,
+            preload: __dirname + '/public/preload.js'
+        }
     });
 
     win.maximize();
@@ -57,6 +63,14 @@ function createMenu () {
             {role: 'minimize'},
             {type: 'separator'},
             {role: 'close'},
+            {type: 'separator'},
+            {
+                label: 'Go to home',
+                accelerator: 'CommandOrControl+Shift+H',
+                click: (menuItem, browserWindow) => {
+                    browserWindow.webContents.send('home')
+                }
+            },
         ]
     }];
 

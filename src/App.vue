@@ -1,16 +1,31 @@
 <template>
-  <div id="app">
-    <router-view :key="$route.fullPath"/>
+    <div id="app" :class="{ 'app--electron': isElectron }">
+        <div class="statusbar"></div>
+        <router-view :key="$route.fullPath"/>
 
-		<!-- <div class="offline">
-			<span><strong>Oh snap!</strong> You seem to be offline. Reconnect to enjoy more awesomeness</span>
-		</div> -->
-  </div>
-
+        <!-- <div class="offline">
+            <span><strong>Oh snap!</strong> You seem to be offline. Reconnect to enjoy more awesomeness</span>
+        </div> -->
+    </div>
 </template>
 
 <script>
+
+import isElectron from 'is-electron';
+
 export default {
+
+    data: () => ({
+        isElectron: false,
+    }),
+
+    mounted() {
+        if (isElectron()) {
+            this.isElectron = true;
+
+            window.ipcRenderer.on('home', this.goToHome);
+        }
+	},
 
 	methods: {
 		goToDetailPage(event, args) {
@@ -21,6 +36,12 @@ export default {
 				}
 			});
 		},
+
+        goToHome() {
+            this.$router.push({
+                name: 'home'
+            });
+        },
 	}
 }
 
@@ -70,6 +91,29 @@ body {
 	text-align: center;
 	color: #2c3e50;
 	height: 100%;
+}
+
+.app--electron {
+	padding-top: 22px;
+}
+
+.statusbar {
+	-webkit-app-region: drag;
+	display: block;
+	height: 22px;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 10;
+}
+.statusbar::before {
+	background-color: rgba(255, 255, 255, .75);
+	bottom: 0;
+	content: '';
+	left: 0;
+	position: absolute;
+	right: 0;
+	top: 0;
 }
 
 /* .app--offline .offline {

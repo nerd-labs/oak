@@ -20,6 +20,7 @@
     "@vue/cli-service": "^3.0.1",
     "electron": "^2.0.8",
     "electron-is-dev": "^0.3.0",
+    "is-electron": "^2.1.0",
     "vue-template-compiler": "^2.5.17"
   },
   "eslintConfig": {
