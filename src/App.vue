@@ -1,11 +1,11 @@
 <template>
-    <div id="app" :class="{ 'app--electron': isElectron }">
+    <div id="app" :class="{ 'app--offline': offline, 'app--electron': isElectron }">
         <div class="statusbar"></div>
         <router-view :key="$route.fullPath"/>
 
-        <!-- <div class="offline">
+        <div class="offline">
             <span><strong>Oh snap!</strong> You seem to be offline. Reconnect to enjoy more awesomeness</span>
-        </div> -->
+        </div>
     </div>
 </template>
 
@@ -16,6 +16,7 @@ import isElectron from 'is-electron';
 export default {
 
     data: () => ({
+        offline: false,
         isElectron: false,
     }),
 
@@ -24,25 +25,43 @@ export default {
             this.isElectron = true;
 
             window.ipcRenderer.on('home', this.goToHome);
-        }
-	},
 
-	methods: {
-		goToDetailPage(event, args) {
-			this.$router.push({
-				name: 'pokemon',
-				params: {
-					id: args
-				}
-			});
-		},
+            window.addEventListener('online',  this.updateOnlineStatus);
+            window.addEventListener('offline',  this.updateOnlineStatus);
+            this.updateOnlineStatus();
+        }
+    },
+
+    beforeDestroy() {
+        if (isElectron()) {
+            window.ipcRenderer.removeAllListeners('touchbar', this.goToDetailPage);
+            window.ipcRenderer.removeAllListeners('home', this.goToDetailPage);
+
+            window.removeEventListener('online',  this.updateOnlineStatus);
+            window.removeEventListener('offline',  this.updateOnlineStatus);
+        }
+    },
+
+    methods: {
+        goToDetailPage(event, args) {
+            this.$router.push({
+                name: 'pokemon',
+                params: {
+                    id: args
+                }
+            });
+        },
 
         goToHome() {
             this.$router.push({
                 name: 'home'
             });
         },
-	}
+
+        updateOnlineStatus() {
+            this.offline = !navigator.onLine;
+        }
+    }
 }
 
 </script>
@@ -52,10 +71,10 @@ export default {
 
 html,
 body {
-		background-color: white;
-		margin: 0;
-		padding: 0;
-		height: 100%;
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    height: 100%;
 }
 
 .material-icons {
@@ -84,54 +103,58 @@ body {
 }
 
 #app {
-	font-family: 'Press Start 2P', cursive;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-	box-sizing: border-box;
-	text-align: center;
-	color: #2c3e50;
-	height: 100%;
+    font-family: 'Press Start 2P', cursive;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    box-sizing: border-box;
+    text-align: center;
+    color: #2c3e50;
+    height: 100%;
 }
 
 .app--electron {
-	padding-top: 22px;
+    padding-top: 22px;
+}
+
+.app--electron .offline {
+    padding-top: 42px;
 }
 
 .statusbar {
-	-webkit-app-region: drag;
-	display: block;
-	height: 22px;
-	position: fixed;
-	top: 0;
-	width: 100%;
-	z-index: 10;
+    -webkit-app-region: drag;
+    display: block;
+    height: 22px;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10;
 }
 .statusbar::before {
-	background-color: rgba(255, 255, 255, .75);
-	bottom: 0;
-	content: '';
-	left: 0;
-	position: absolute;
-	right: 0;
-	top: 0;
+    background-color: rgba(255, 255, 255, .75);
+    bottom: 0;
+    content: '';
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
 }
 
-/* .app--offline .offline {
-	transform: translateY(0);
+.app--offline .offline {
+    transform: translateY(0);
 }
 
 .offline {
-	background-color: red;
-	color: white;
-	font-size: 14px;
-	left: 0;
-	padding: 20px;
-	position: fixed;
-	right: 0;
-	top: 0;
-	transition-property: transform;
-	transition-duration: .3s;
-	transition-timing-function: linear;
-	transform: translateY(-100%);
-} */
+    background-color: red;
+    color: white;
+    font-size: 14px;
+    left: 0;
+    padding: 20px;
+    position: fixed;
+    right: 0;
+    top: 0;
+    transition-property: transform;
+    transition-duration: .3s;
+    transition-timing-function: linear;
+    transform: translateY(-100%);
+}
 </style>
