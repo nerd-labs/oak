@@ -25,6 +25,11 @@ export default {
             this.isElectron = true;
 
             window.ipcRenderer.on('home', this.goToHome);
+            window.ipcRenderer.on('touchbar', this.goToDetailPage);
+
+            window.ipcRenderer.send('touchbar', {
+                number: 151
+            });
 
             window.addEventListener('online',  this.updateOnlineStatus);
             window.addEventListener('offline',  this.updateOnlineStatus);

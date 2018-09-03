@@ -1,4 +1,5 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, TouchBar } = require('electron');
+const { TouchBarButton, TouchBarSpacer } = TouchBar;
 const isDev = require('electron-is-dev');
 
 let win;
@@ -93,9 +94,37 @@ function createMenu () {
     Menu.setApplicationMenu(menu);
 }
 
+function touchbar(event, args) {
+    let buttons = [];
+
+    const random = new TouchBarButton({
+        label: `show random pokemon`,
+        click: () => {
+            const random = Math.floor(Math.random() * args.number) + 1
+            event.sender.send('touchbar', random);
+        }
+    });
+
+    let touchBar = new TouchBar([
+        new TouchBarSpacer({ size: 'flexible' }),
+        random,
+        new TouchBarSpacer({ size: 'flexible' }),
+    ]);
+
+    win.setTouchBar(touchBar);
+}
+
+function bindEvents() {
+    ipcMain.on('touchbar', (event, args) => {
+        touchbar(event, args);
+    });
+}
+
 app.on('ready', () => {
     createWindow();
     createMenu();
+
+    bindEvents();
 });
 
 app.on('window-all-closed', () => {
