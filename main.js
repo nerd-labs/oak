@@ -95,8 +95,6 @@ function createMenu () {
 }
 
 function touchbar(event, args) {
-    let buttons = [];
-
     const random = new TouchBarButton({
         label: `show random pokemon`,
         click: () => {
