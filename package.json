@@ -7,9 +7,11 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "electron": "npm run build && electron ."
+    "electron": "npm run build && electron .",
+    "package:mac": "ELECTRON_IS_DEV=0 npm run build && electron-packager . --overwrite --platform=darwin --arch=x64 --icon=public/appicon.icns --prune=true --out=release-builds"
   },
   "dependencies": {
+    "electron-is-dev": "^0.3.0",
     "pokeapi-js-wrapper": "^1.1.1",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1"
@@ -19,7 +21,7 @@
     "@vue/cli-plugin-eslint": "^3.0.1",
     "@vue/cli-service": "^3.0.1",
     "electron": "^2.0.8",
-    "electron-is-dev": "^0.3.0",
+    "electron-packager": "^12.1.1",
     "is-electron": "^2.1.0",
     "vue-template-compiler": "^2.5.17"
   },
