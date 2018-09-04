@@ -5,5 +5,31 @@
   "start_url": "/",
   "background_color": "#ff69b4",
   "theme_color": "#008080",
-  "display": "standalone"
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "./assets/icons/76-76.png",
+      "sizes": "76x76",
+      "type": "image\/png",
+      "density": "1.5"
+    },
+    {
+      "src": "./assets/icons/120-120.png",
+      "sizes": "120x120",
+      "type": "image\/png",
+      "density": "2.0"
+    },
+    {
+      "src": "./assets/icons/152-152.png",
+      "sizes": "152x152",
+      "type": "image\/png",
+      "density": "3.0"
+    },
+    {
+      "src": "./assets/icons/1024-1024.png",
+      "sizes": "1024x1024",
+      "type": "image\/png",
+      "density": "4.0"
+    }
+  ]
 }
