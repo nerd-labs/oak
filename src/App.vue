@@ -1,37 +1,19 @@
 <template>
-  <div id="app" :class="{ 'app--offline': !isOnline }">
+  <div id="app">
     <router-view :key="$route.fullPath"/>
 
-		<div class="offline">
+		<!-- <div class="offline">
 			<span><strong>Oh snap!</strong> You seem to be offline. Reconnect to enjoy more awesomeness</span>
-		</div>
+		</div> -->
   </div>
 
 </template>
 
 <script>
 export default {
-    data: () => ({
-        isOnline: false,
-    }),
-
-    beforeMount () {
-        window.addEventListener('online',  this.updateOnlineStatus);
-        window.addEventListener('offline',  this.updateOnlineStatus);
-		this.updateOnlineStatus();
-	},
-
-    beforeUnmount () {
-        window.removeEventListener('online',  this.updateOnlineStatus);
-        window.removeEventListener('offline',  this.updateOnlineStatus);
-	},
 
 	methods: {
-        updateOnlineStatus() {
-            this.isOnline = navigator.onLine;
-        },
-
-        goToDetailPage(event, args) {
+		goToDetailPage(event, args) {
 			this.$router.push({
 				name: 'pokemon',
 				params: {
@@ -90,7 +72,7 @@ body {
 	height: 100%;
 }
 
-.app--offline .offline {
+/* .app--offline .offline {
 	transform: translateY(0);
 }
 
@@ -107,5 +89,5 @@ body {
 	transition-duration: .3s;
 	transition-timing-function: linear;
 	transform: translateY(-100%);
-}
+} */
 </style>
