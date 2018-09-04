@@ -1,0 +1,9 @@
+{
+  "name": "Professor Oak",
+  "short_name": "PWA Test",
+  "lang": "en-US",
+  "start_url": "/",
+  "background_color": "#ff69b4",
+  "theme_color": "#008080",
+  "display": "standalone"
+}
