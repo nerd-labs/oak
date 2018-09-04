@@ -3,6 +3,10 @@ node_modules
 /dist
 release-builds
 
+# firebase
+.firebase
+public/firebase.config.js
+
 # local env files
 .env.local
 .env.*.local

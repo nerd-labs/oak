@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import firebase from "firebase";
+import { firebaseConfig } from '../public/firebase.config.js';
 
 Vue.config.productionTip = false
 
@@ -23,3 +25,5 @@ if (navigator.serviceWorker.controller) {
 			console.log('Service worker has been registered');
 		});
 }
+
+firebase.initializeApp(firebaseConfig);
