@@ -76,9 +76,15 @@ export default {
 
             if (!pokedex) pokedex = [];
 
-            pokedex.push(this.$route.params.id);
+            pokedex.push(parseInt(this.$route.params.id));
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
+
+            new Notification(`New pokemon added to pokedex`, {
+                body: this.pokemon.name,
+                icon: this.pokemon.sprites.front_default,
+                requireInteraction: false
+            });
 
             this.isInPokedex = true;
         },
@@ -88,13 +94,19 @@ export default {
 
             if (!pokedex) pokedex = [];
 
-            let i = pokedex.indexOf(this.$route.params.id);
+            let i = pokedex.indexOf(parseInt(this.$route.params.id));
 
             if(i != -1) {
                 pokedex.splice(i, 1);
             }
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
+
+            new Notification(`Pokemon removed from pokedex`, {
+                body: this.pokemon.name,
+                icon: this.pokemon.sprites.front_default,
+                requireInteraction: false
+            });
 
             this.isInPokedex = false;
         },
@@ -104,7 +116,7 @@ export default {
 
             if (pokedex) {
                 const pkmn = pokedex.find((p) => {
-                    return p === this.$route.params.id
+                    return parseInt(p) === parseInt(this.$route.params.id);
                 });
 
                 if (pkmn) return true;
