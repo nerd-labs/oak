@@ -80,6 +80,12 @@ export default {
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
 
+            new Notification(`New pokemon added to pokedex`, {
+                body: this.pokemon.name,
+                icon: this.pokemon.sprites.front_default,
+                requireInteraction: false
+            });
+
             this.isInPokedex = true;
         },
 
@@ -95,6 +101,12 @@ export default {
             }
 
             localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
+
+            new Notification(`Pokemon removed from pokedex`, {
+                body: this.pokemon.name,
+                icon: this.pokemon.sprites.front_default,
+                requireInteraction: false
+            });
 
             this.isInPokedex = false;
         },
