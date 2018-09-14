@@ -18,11 +18,10 @@ if (navigator.serviceWorker.controller) {
 } else {
 	//Register the ServiceWorker
 	navigator.serviceWorker
-		.register('sw.js', {
-    	scope: './'
-  	})
+		.register('sw.js')
 		.then(reg => {
 			console.log('Service worker has been registered');
+            return Notification.requestPermission();
 		});
 }
 

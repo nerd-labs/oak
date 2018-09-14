@@ -1,6 +1,6 @@
 <template>
     <div class="pokemon-detail">
-        <div v-if="!loading">
+        <div v-if="!loading && pokemon">
             <div class="go-back" @click="goBack()">🔙</div>
 
             <h1>{{pokemon.name}}</h1>
@@ -10,23 +10,32 @@
                 <li v-for="stat in pokemon.stats" :key="stat.stat.name"><strong>{{stat.stat.name}}</strong> {{stat.base_stat}}</li>
             </ul>
 
-            <a @click="addToPokedex()" class="pokemon__add" v-if="!isInPokedex">
+            <a @click="addToPokedex()" class="pokemon__add" v-if="!isInPokedex && !pokemonSubmitted">
                 <i class="material-icons">add</i>
                 Add to pokedex
             </a>
 
-            <a @click="removeFromPokedex()" class="pokemon__add" v-if="isInPokedex">
+            <a class="pokemon__add" v-if="pokemonSubmitted">
+                <i class="material-icons">query_builder</i>
+                Updating pokedex
+            </a>
+
+            <a @click="removeFromPokedex()" class="pokemon__add" v-if="isInPokedex && !pokemonSubmitted">
                 <i class="material-icons">clear</i>
                 Remove from pokedex
             </a>
         </div>
 
-        <div v-if="loading" class="loading">
-        </div>
+        <div v-if="loading || !pokemon" class="loading"></div>
 </div>
 </template>
 
 <script>
+/* eslint-disable */
+
+import idb from 'idb';
+import firebase from 'firebase';
+
 const Pokedex = require('pokeapi-js-wrapper');
 const STORAGE_KEY = 'pokedex';
 
@@ -35,13 +44,38 @@ export default {
 
     data: () => ({
         pokemon: undefined,
+        pokemonSubmitted: false,
         loading: true,
         isInPokedex: false,
+        db: undefined,
     }),
 
     mounted () {
         this.fetchData();
-        this.isInPokedex = this.checkPokedex();
+
+        this.db = idb.open('oak-db', 1, upgradeDB => {
+          upgradeDB.createObjectStore('pokedex');
+        });
+
+        var pokedex = firebase.database().ref(`pokedex/${this.$route.params.id}`);
+        pokedex.on('value', (snapshot) => {
+            console.log('on value change', snapshot.val());
+            this.pokemonSubmitted = false;
+
+            if (snapshot.val()) {
+                this.isInPokedex = true;
+            } else {
+                this.isInPokedex = false;
+            }
+
+            if (this.pokemon) {
+                return this.db.then(db => {
+                    const transaction = db.transaction('pokedex', 'readwrite');
+                    transaction.objectStore('pokedex').delete(this.pokemon.name);
+                    return transaction.complete;
+                })
+            }
+        });
     },
 
     methods: {
@@ -50,7 +84,6 @@ export default {
                 protocol: 'https',
                 versionPath: '/api/v2/',
                 cache: true
-                // timeout: 5 * 1000 // 5s
             };
 
             const P = new Pokedex.Pokedex(options);
@@ -58,7 +91,7 @@ export default {
             P
             .resource(`api/v2/pokemon/${this.$route.params.id}`)
             .then((response) => {
-                this.pokemon = response;
+                if (typeof response === 'object') this.pokemon = response;
                 setTimeout(() => {
                     this.loading = false;
                 }, 1000);
@@ -71,58 +104,30 @@ export default {
             });
         },
 
+        updatePokedex(add) {
+            this.pokemonSubmitted = true;
+            return this.db.then(db => {
+                const transaction = db.transaction('pokedex', 'readwrite');
+                transaction.objectStore('pokedex').put(
+                    {
+                        id: this.pokemon.id,
+                        name: this.pokemon.name,
+                        add
+                    },
+                    this.pokemon.name
+                );
+                return transaction.complete;
+            })
+            .then(() => navigator.serviceWorker.ready)
+            .then(registration => registration.sync.register('updatePokedex'));
+        },
+
         addToPokedex() {
-            let pokedex = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-            if (!pokedex) pokedex = [];
-
-            pokedex.push(parseInt(this.$route.params.id));
-
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
-
-            new Notification(`New pokemon added to pokedex`, {
-                body: this.pokemon.name,
-                icon: this.pokemon.sprites.front_default,
-                requireInteraction: false
-            });
-
-            this.isInPokedex = true;
+            this.updatePokedex(true);
         },
 
         removeFromPokedex() {
-            let pokedex = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-            if (!pokedex) pokedex = [];
-
-            let i = pokedex.indexOf(parseInt(this.$route.params.id));
-
-            if(i != -1) {
-                pokedex.splice(i, 1);
-            }
-
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(pokedex));
-
-            new Notification(`Pokemon removed from pokedex`, {
-                body: this.pokemon.name,
-                icon: this.pokemon.sprites.front_default,
-                requireInteraction: false
-            });
-
-            this.isInPokedex = false;
-        },
-
-        checkPokedex() {
-            const pokedex = JSON.parse(localStorage.getItem(STORAGE_KEY));
-
-            if (pokedex) {
-                const pkmn = pokedex.find((p) => {
-                    return parseInt(p) === parseInt(this.$route.params.id);
-                });
-
-                if (pkmn) return true;
-            }
-
-            return false;
+            this.updatePokedex(false);
         }
     }
 

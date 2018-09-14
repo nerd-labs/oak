@@ -1,5 +1,13 @@
 //This is the "Offline page" service worker
 
+importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-database.js');
+
+firebase.initializeApp({
+    databaseURL: "https://professor-oak-1b6bc.firebaseio.com",
+});
+
+
 //Install stage sets up the offline page in the cache and opens a new cache
 self.addEventListener('install', function(event) {
   var offlinePage = new Request('offline.html');
@@ -32,3 +40,54 @@ self.addEventListener('refreshOffline', function(response) {
     return cache.put(offlinePage, response);
   });
 });
+
+self.addEventListener('sync', event => {
+    if (event.tag === 'updatePokedex') {
+        event
+            .waitUntil(persistLocalChanges()
+            .then(() => self.registration.showNotification("Pokedex was updated"))
+            .catch(() => {
+                console.log("Error syncing pokedex");
+            })
+        );
+    }
+});
+
+function getLocalRecords() {
+    const request = indexedDB.open( 'oak-db', 1 );
+
+     return new Promise((resolve, reject) => {
+         request.onsuccess = function() {
+             const db = this.result;
+             const text = db.transaction( 'pokedex' ).objectStore( 'pokedex' ).getAll();
+             text.onsuccess = () => resolve(text.result);
+         };
+    });
+}
+
+function persistLocalChanges() {
+    return getLocalRecords()
+        .then(records => {
+            const firebaseDb = firebase.database();
+            return records.forEach(pokemon => {
+                const ref = firebaseDb
+                    .ref(`pokedex/${pokemon.id}`);
+
+                if (pokemon.add) {
+                    return firebaseDb
+                        .ref(`pokedex/${pokemon.id}`)
+                        .set({
+                                name: pokemon.name
+                            },
+                            (error) => {
+                                if (error) {
+                                    console.log("Update firebase db failed", error);
+                                }
+                            });
+                } else {
+                    return ref.remove();
+                }
+            });
+        })
+        .catch(error => console.log(error));
+}
