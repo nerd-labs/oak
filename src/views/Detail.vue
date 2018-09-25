@@ -56,7 +56,7 @@ export default {
             const P = new Pokedex.Pokedex(options);
 
             P
-            .resource(`api/v2/pokemon/${this.$route.params.id}`)
+            .resource(`api/v2/pokemon/${this.$route.params.id}/`)
             .then((response) => {
                 this.pokemon = response;
                 setTimeout(() => {
