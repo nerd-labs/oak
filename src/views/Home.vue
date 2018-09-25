@@ -1,7 +1,7 @@
 <template>
 		<div class="pokemon-list">
 			<div class="pokemon" v-for="i in totalPokemons" :key="i" :class="{ 'pokemon--caught': inPokedex(i) }">
-					<img :src="getPokemonImage(i)" @click="goToDetailPage(i)">
+					<img :src="getPokemonImage(i)" @click="goToDetailPage(i)" :alt="`pokemon ${i}`">
 			</div>
 		</div>
 </template>
@@ -14,7 +14,6 @@ export default {
 
 	data: () => ({
 		totalPokemons: 151,
-		image: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png',
 		pokedex: [],
 	}),
 
