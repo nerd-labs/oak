@@ -155,9 +155,6 @@ export default {
 .go-back {
     cursor: pointer;
     font-size: 30px;
-    left: 20px;
-    position: absolute;
-    top: 20px;
     z-index: 20;
 }
 
