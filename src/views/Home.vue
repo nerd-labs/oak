@@ -7,7 +7,7 @@
 </template>
 
 <script>
-const STORAGE_KEY = 'pokedex';
+import firebase from 'firebase';
 
 export default {
 	name: 'PokemonList',
@@ -15,6 +15,7 @@ export default {
 	data: () => ({
 		totalPokemons: 151,
 		pokedex: [],
+        db: undefined,
 	}),
 
 	beforeMount() {
@@ -23,13 +24,16 @@ export default {
 
 	methods: {
 		getPokedex() {
-			this.pokedex = JSON.parse(localStorage.getItem(STORAGE_KEY));
+            var pokedex = firebase.database().ref(`pokedex`);
 
-			if (!this.pokedex) this.pokedex = [];
+            pokedex.on('value', (snapshot) => {
+                this.pokedex = Object.keys(snapshot.val());
+                if (!this.pokedex) this.pokedex = [];
+            });
 		},
 
 		inPokedex(id) {
-			let i = this.pokedex.indexOf(id);
+			let i = this.pokedex.indexOf(id.toString());
 
 			if(i != -1) {
 				return true;

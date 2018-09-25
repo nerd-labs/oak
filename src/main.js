@@ -6,6 +6,8 @@ import router from './router'
 import firebase from "firebase";
 import { firebaseConfig } from '../public/firebase.config.js';
 
+firebase.initializeApp(firebaseConfig);
+
 Vue.config.productionTip = false
 
 new Vue({
@@ -24,5 +26,3 @@ if (navigator.serviceWorker.controller) {
             return Notification.requestPermission();
 		});
 }
-
-firebase.initializeApp(firebaseConfig);
