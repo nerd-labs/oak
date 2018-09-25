@@ -1,7 +1,7 @@
 <template>
 		<div class="pokemon-list">
 			<div class="pokemon" v-for="i in totalPokemons" :key="i" :class="{ 'pokemon--caught': inPokedex(i) }">
-					<img :src="getPokemonImage(i)" @click="goToDetailPage(i)">
+					<img :src="getPokemonImage(i)" @click="goToDetailPage(i)" :alt="`pokemon ${i}`">
 			</div>
 		</div>
 </template>
