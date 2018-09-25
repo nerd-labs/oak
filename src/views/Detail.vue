@@ -59,7 +59,6 @@ export default {
 
         var pokedex = firebase.database().ref(`pokedex/${this.$route.params.id}`);
         pokedex.on('value', (snapshot) => {
-            console.log('on value change', snapshot.val());
             this.pokemonSubmitted = false;
 
             if (snapshot.val()) {
@@ -89,7 +88,7 @@ export default {
             const P = new Pokedex.Pokedex(options);
 
             P
-            .resource(`api/v2/pokemon/${this.$route.params.id}`)
+            .resource(`api/v2/pokemon/${this.$route.params.id}/`)
             .then((response) => {
                 if (typeof response === 'object') this.pokemon = response;
                 setTimeout(() => {
