@@ -45,7 +45,7 @@ self.addEventListener('sync', event => {
     if (event.tag === 'updatePokedex') {
         event
             .waitUntil(persistLocalChanges()
-            .then(() => self.registration.showNotification("Pokedex was updated"))
+            .then(() => self.registration.showNotification("Pokedex was updated", { icon: 'appicon.png', }))
             .catch(() => {
                 console.log("Error syncing pokedex");
             })
